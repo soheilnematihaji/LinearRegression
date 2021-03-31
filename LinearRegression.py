@@ -44,8 +44,8 @@ class LinearRegression():
         theta= gd.gradientDescent(J, np.array([0 for i in range(n)]),learning_rate=learning_rate,delta_val=0.000001, iterations=10000)
         
         # Inverse Scaling the value of theta
-        theta[1:]=(theta[1:]/normalScalar.std[:-1])*normalScalar.std[-1]
         theta[0]=normalScalar.std[-1]*(theta[0]-(sum(normalScalar.mean[:-1] *(theta[1:]/normalScalar.std[:-1]) )))+normalScalar.mean[-1]
+        theta[1:]=(theta[1:]/normalScalar.std[:-1])*normalScalar.std[-1]
         
         return theta
         
@@ -95,6 +95,12 @@ class Test(unittest.TestCase):
         model=LinearRegression(np.array(x_train),np.array(y_train))
         bestLine=model.findBestFitLine()
         assert LA.norm(bestLine-[[0],[1]]) < 0.1
+        
+    def test_fitLine_theta0_Nonezero(self):
+        point,x_train,y_train=self.generate_random_noraml_point(self.train_size,1)
+        model=LinearRegression(np.array(x_train),np.array(1+y_train))
+        bestLine=model.findBestFitLine()
+        assert LA.norm(bestLine-[[1],[1]]) < 0.1
         
     def test_findBestFitLine_using_gd(self):
         point,x_train,y_train=self.generate_random_noraml_point(self.train_size,1)
